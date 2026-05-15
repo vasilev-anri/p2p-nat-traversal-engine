@@ -3,7 +3,7 @@ project(p2p_nat)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(p2p_nat main.cpp
+add_executable(p2p_nat src/app/main.cpp
         src/reactor/reactor.cpp
         src/reactor/reactor.h
         src/handlers/event_handler.h
