@@ -32,6 +32,8 @@ classDiagram
         +unregister_handler(fd: int)
         +handle_events()
     }
+    
+    class epoll
 
     class EventHandler {
         <<interface>>
@@ -73,7 +75,11 @@ classDiagram
     }
 
     Reactor --> EventHandler : owns
-    Reactor ..> epoll (edge-triggered) : uses
+    Reactor ..> epoll : uses
+    
+    note on link Reactor ..> epoll
+        edge-triggered mode (EPOLLET)
+    end note
 
     EventHandler <|-- TCPListener
     EventHandler <|-- TCPConnector
