@@ -8,9 +8,11 @@
 - non-blocking socket draining for EPOLLET
 - callback-based connection acceptance architecture
 
-## Planned Features
-- custom binary wire protocol
+## In Progress
+- custom binary wire protocol (TLV-based)
 - peer abstraction & connection state machine
+
+## Planned
 - lightweight signaling/bootstrap server
 - peer registration & discovery
 - NAT traversal engine
