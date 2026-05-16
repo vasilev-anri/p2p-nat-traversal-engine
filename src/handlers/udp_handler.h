@@ -26,9 +26,8 @@
 class UDPHandler : public EventHandler {
     UniqueFD fd_;
     int port_;
-    Reactor& reactor_;
 public:
-    explicit UDPHandler(int port, Reactor& reactor);
+    explicit UDPHandler(int port);
     void handle_event(uint32_t events) override;
     [[nodiscard]] int get_fd() const override;
 private:

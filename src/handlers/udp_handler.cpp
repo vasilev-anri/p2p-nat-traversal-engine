@@ -6,14 +6,14 @@
 
 
 
-UDPHandler::UDPHandler(int port, Reactor& reactor) : port_(port), reactor_(reactor) {
+UDPHandler::UDPHandler(int port) : port_(port) {
     fd_ = UniqueFD(socket(AF_INET, SOCK_DGRAM, 0));
     setup();
 }
 
 void UDPHandler::handle_event(uint32_t events) {
     if (events & (EPOLLERR | EPOLLHUP)) {
-        reactor_.unregister_handler(get_fd());
+        done();
         return;
     }
 
@@ -22,7 +22,7 @@ void UDPHandler::handle_event(uint32_t events) {
     RecvStatus status = drain_udp_socket(get_fd(), packets);
 
     if (status == RecvStatus::ERROR) {
-        reactor_.unregister_handler(get_fd());
+        done();
         return;
     }
 

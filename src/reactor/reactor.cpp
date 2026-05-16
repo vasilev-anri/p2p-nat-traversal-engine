@@ -8,6 +8,9 @@ Reactor::Reactor() {
 
 void Reactor::register_handler(std::unique_ptr<EventHandler> handler) {
     int fd = handler->get_fd();
+
+    handler->set_done_callback([this, fd]() { unregister_handler(fd); });
+
     handlers[fd] = std::move(handler);
 
     epoll_event ev{};
@@ -44,8 +47,6 @@ void Reactor::handle_events() {
 
 
     for (int i = 0; i < nfds; i++) {
-
-
         int fd = events[i].data.fd;
 
         auto it = handlers.find(fd);

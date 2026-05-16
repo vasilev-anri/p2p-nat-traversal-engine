@@ -18,11 +18,10 @@
 class TCPConnector : public EventHandler {
     UniqueFD fd_;
     std::vector<uint8_t> buf;
-    Reactor& reactor_;
 public:
-    explicit TCPConnector(UniqueFD fd, Reactor& reactor);
+    explicit TCPConnector(UniqueFD fd);
     void handle_event(uint32_t events) override;
-    int get_fd() const override;
+    [[nodiscard]] int get_fd() const override;
 };
 
 #endif //P2P_NAT_TCP_ACCEPTOR_H

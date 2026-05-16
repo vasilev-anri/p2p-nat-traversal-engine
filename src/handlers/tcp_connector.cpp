@@ -1,17 +1,17 @@
 #include "tcp_connector.h"
 
 
-TCPConnector::TCPConnector(UniqueFD fd, Reactor& reactor) : fd_(std::move(fd)), reactor_(reactor) { }
+TCPConnector::TCPConnector(UniqueFD fd) : fd_(std::move(fd)) { }
 
 void TCPConnector::handle_event(uint32_t events) {
 
     if (events & EPOLLERR) {
-        reactor_.unregister_handler(get_fd());
+        done();
         return;
     }
 
     if (events & EPOLLHUP) {
-        reactor_.unregister_handler(get_fd());
+        done();
         return;
     }
 
@@ -19,7 +19,7 @@ void TCPConnector::handle_event(uint32_t events) {
         RecvStatus status = drain_tcp_socket(get_fd(), buf);
 
         if (status == RecvStatus::CLOSED || status == RecvStatus::ERROR) {
-            reactor_.unregister_handler(get_fd());
+            done();
             return;
         }
         std::cout.write(reinterpret_cast<const char*>(buf.data()), buf.size());
@@ -28,7 +28,7 @@ void TCPConnector::handle_event(uint32_t events) {
     }
 
     if (events & EPOLLRDHUP) {
-        reactor_.unregister_handler(get_fd());
+        done();
         return;
     }
 

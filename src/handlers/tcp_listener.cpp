@@ -2,8 +2,9 @@
 
 #include "tcp_connector.h"
 
+#include <iostream>
 
-TCPListener::TCPListener(int port, Reactor& reactor) : port_(port), reactor_(reactor) {
+TCPListener::TCPListener(int port, SpawnCallback spawn) : port_(port), spawn_(std::move(spawn)) {
     fd_ = UniqueFD(socket(AF_INET, SOCK_STREAM, 0));
     setup();
 }
@@ -11,13 +12,13 @@ TCPListener::TCPListener(int port, Reactor& reactor) : port_(port), reactor_(rea
 
 void TCPListener::handle_event(uint32_t events) {
     if (events & EPOLLERR) {
-        reactor_.unregister_handler(get_fd());
+        done();
         return;
     }
     if (events & EPOLLIN) {
         accept_all(get_fd(), [&](UniqueFD cfd) {
-            auto conn = std::make_unique<TCPConnector>(std::move(cfd), reactor_);
-            reactor_.register_handler(std::move(conn));
+            auto conn = std::make_unique<TCPConnector>(std::move(cfd));
+            spawn_(std::move(conn));
         });
     }
 }
