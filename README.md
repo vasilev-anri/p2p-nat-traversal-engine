@@ -2,14 +2,13 @@
 
 ## Current Features
 - epoll-based reactor
-- edge-triggered non-blocking TCP
+- edge-triggered non-blocking TCP & UDP
 - modular event handler system
 - RAII file descriptor management
 - non-blocking socket draining for EPOLLET
 - callback-based connection acceptance architecture
 
 ## Planned Features
-- UDP transport layer
 - custom binary wire protocol
 - peer abstraction & connection state machine
 - lightweight signaling/bootstrap server
@@ -37,29 +36,30 @@ classDiagram
         <<interface>>
         +handle_event(events: uint32_t)
         +get_fd(): int
+        +set_done_callback(cb: DoneCallback)
+        #done()
     }
 
     class TCPListener {
         -fd_: UniqueFD
         -port_: int
-        -reactor_: Reactor&
+        -spawn_: SpawnCallback
         +handle_event(events: uint32_t)
         +get_fd(): int
-        +setup()
+        -setup()
     }
 
     class TCPConnector {
         -fd_: UniqueFD
-        -reactor_: Reactor&
         +handle_event(events: uint32_t)
         +get_fd(): int
     }
 
     class UDPHandler {
         -fd_: UniqueFD
-        -reactor_: Reactor&
         +handle_event(events: uint32_t)
         +get_fd(): int
+        -setup()
     }
 
     class UniqueFD {
@@ -84,5 +84,6 @@ classDiagram
     UDPHandler --> UniqueFD : owns
 
     TCPListener ..> accept_all : uses
-
-    TCPConnector ..> drain_socket : uses
+    TCPListener ..> TCPConnector : spawns
+    TCPConnector ..> drain_tcp_socket : uses
+    UDPHandler ..> drain_udp_socket : uses
