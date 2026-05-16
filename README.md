@@ -51,7 +51,6 @@ classDiagram
     class TCPConnector {
         -fd_: UniqueFD
         -reactor_: Reactor&
-        -buf: vector<uint8_t>
         +handle_event(events: uint32_t)
         +get_fd(): int
     }
@@ -74,7 +73,7 @@ classDiagram
     }
 
     Reactor --> EventHandler : owns
-    Reactor ..> epoll : uses (edge-triggered)
+    Reactor ..> epoll (edge-triggered) : uses
 
     EventHandler <|-- TCPListener
     EventHandler <|-- TCPConnector
@@ -85,3 +84,5 @@ classDiagram
     UDPHandler --> UniqueFD : owns
 
     TCPListener ..> accept_all : uses
+
+    TCPConnector ..> drain_socket : uses
