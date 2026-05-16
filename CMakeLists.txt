@@ -14,5 +14,7 @@ add_executable(p2p_nat src/app/main.cpp
         src/utils/UniqueFD.h
         src/utils/socket_utils.h
         src/utils/socket_utils.cpp
+        src/handlers/udp_handler.cpp
+        src/handlers/udp_handler.h
 
 )

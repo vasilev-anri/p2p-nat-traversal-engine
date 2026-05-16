@@ -16,7 +16,7 @@ void TCPConnector::handle_event(uint32_t events) {
     }
 
     if (events & EPOLLIN) {
-        RecvStatus status = drain_socket(get_fd(), buf);
+        RecvStatus status = drain_tcp_socket(get_fd(), buf);
 
         if (status == RecvStatus::CLOSED || status == RecvStatus::ERROR) {
             reactor_.unregister_handler(get_fd());

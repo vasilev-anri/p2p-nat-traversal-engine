@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <vector>
 #include <iterator>
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include "UniqueFD.h"
 
@@ -16,10 +17,16 @@ enum class RecvStatus {
     ERROR
 };
 
+struct UDPPacket {
+    std::vector<uint8_t> data;
+    sockaddr_in sender;
+};
 
 int set_nonblocking(int fd);
 
-RecvStatus drain_socket(int fd, std::vector<uint8_t>& out);
+RecvStatus drain_tcp_socket(int fd, std::vector<uint8_t>& out);
+
+RecvStatus drain_udp_socket(int fd, std::vector<UDPPacket>& out);
 
 template <typename Callback>
 void accept_all(int fd, Callback cb) {
