@@ -16,5 +16,11 @@ add_executable(p2p_nat src/app/main.cpp
         src/utils/socket_utils.cpp
         src/handlers/udp_handler.cpp
         src/handlers/udp_handler.h
+        src/wire/msg_types.h
+        src/wire/msg_codec.cpp
+        src/wire/msg_codec.h
+        src/wire/msg.h
+        src/wire/msg_header.h
+        src/wire/messages/hello.h
 
 )
