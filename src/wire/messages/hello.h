@@ -4,9 +4,12 @@
 
 struct Hello {
 
-    uint8_t version;
+    static constexpr size_t MIN_SIZE = 12;
+
     uint64_t node_id;
-    uint16_t flags;
+    uint16_t tcp_port;
+    uint16_t udp_port;
+
 };
 
 #endif //P2P_NAT_HELLO_H

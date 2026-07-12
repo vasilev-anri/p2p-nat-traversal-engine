@@ -6,9 +6,16 @@
 #include <stdexcept>
 #include <vector>
 
+#include "msg_header.h"
+#include "messages/hello.h"
+
 class MessageCodec {
 public:
-    // static std::vector<uint8_t> encode_header();
+    static std::vector<uint8_t> encode_header(const MessageHeader&);
+    static MessageHeader decode_header(std::span<const uint8_t>);
+
+    static std::vector<uint8_t> encode_hello(const Hello&);
+    static Hello decode_hello(std::span<const uint8_t>);
 
 private:
     template <class T>
