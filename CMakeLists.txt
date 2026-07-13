@@ -24,5 +24,10 @@ add_executable(p2p_nat src/app/main.cpp
         src/wire/messages/hello.h
         src/wire/msg_parser.cpp
         src/wire/msg_parser.h
+        src/peer/peer.cpp
+        src/peer/peer.h
+        src/peer/peers_manager.cpp
+        src/peer/peers_manager.h
+        src/peer/endpoint.h
 
 )
