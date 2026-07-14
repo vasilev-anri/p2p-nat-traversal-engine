@@ -1,10 +1,7 @@
 #include "tcp_listener.h"
 
-#include "tcp_connector.h"
 
-#include <iostream>
-
-TCPListener::TCPListener(int port, SpawnCallback spawn) : port_(port), spawn_(std::move(spawn)) {
+TCPListener::TCPListener(int port, AcceptCallback on_accept) : port_(port), on_accept_(std::move(on_accept)) {
     fd_ = UniqueFD(socket(AF_INET, SOCK_STREAM, 0));
     setup();
 }
@@ -16,10 +13,12 @@ void TCPListener::handle_event(uint32_t events) {
         return;
     }
     if (events & EPOLLIN) {
-        accept_all(get_fd(), [&](UniqueFD cfd) {
-            auto conn = std::make_unique<TCPConnector>(std::move(cfd));
-            spawn_(std::move(conn));
-        });
+        accept_all(
+            get_fd(),
+            [&](ConnectionInfo connection) {
+                on_accept_(std::move(connection));
+            }
+        );
     }
 }
 

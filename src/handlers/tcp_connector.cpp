@@ -1,5 +1,6 @@
 #include "tcp_connector.h"
 
+#include <sys/epoll.h>
 
 TCPConnector::TCPConnector(UniqueFD fd) : fd_(std::move(fd)) { }
 

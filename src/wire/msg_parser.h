@@ -13,6 +13,14 @@
 
 #include "msg.h"
 
-bool try_parse_message(std::vector<uint8_t>& buf, Message& out);
+class MsgParser {
+public:
+    void feed(std::span<const uint8_t> data);
+    bool next(Message& out);
+
+private:
+    std::vector<uint8_t> buffer_;
+};
+
 
 #endif //P2P_NAT_MSG_PARSER_H

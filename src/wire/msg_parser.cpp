@@ -4,20 +4,25 @@
 
 #include "msg_parser.h"
 
+void MsgParser::feed(std::span<const uint8_t> data) {
+    buffer_.insert(buffer_.end(), data.begin(), data.end());
+}
 
-bool try_parse_message(std::vector<uint8_t>& buf, Message& out) {
-    if (buf.size() < MessageHeader::HEADER_SIZE) return false;
+bool MsgParser::next(Message& out) {
+    if (buffer_.size() < MessageHeader::HEADER_SIZE) return false;
 
-    std::span<const uint8_t> header_span(buf.data(), MessageHeader::HEADER_SIZE);
+    std::span<const uint8_t> header_span(buffer_.data(), MessageHeader::HEADER_SIZE);
     MessageHeader header = MessageCodec::decode_header(header_span);
 
     size_t total = MessageHeader::HEADER_SIZE + header.length;
-    if (buf.size() < total) return false;
+    if (buffer_.size() < total) return false;
 
     out.header = header;
-    out.payload.assign(buf.begin() + MessageHeader::HEADER_SIZE, buf.begin() + total);
+    out.payload.assign(buffer_.begin() + MessageHeader::HEADER_SIZE, buffer_.begin() + total);
 
-    buf.erase(buf.begin(), buf.begin() + total);
+    buffer_.erase(buffer_.begin(), buffer_.begin() + total);
 
     return true;
 }
+
+

@@ -22,6 +22,8 @@
 
 #include <arpa/inet.h>
 
+#include <sys/epoll.h>
+
 
 class UDPHandler : public EventHandler {
     UniqueFD fd_;

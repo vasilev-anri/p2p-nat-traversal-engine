@@ -8,10 +8,18 @@
 int main() {
     Reactor reactor;
 
-    auto listener = std::make_unique<TCPListener>(8080,
-                                                  [&](std::unique_ptr<EventHandler> h) {
-                                                      reactor.register_handler(std::move(h));
-                                                  });
+    // auto listener = std::make_unique<TCPListener>(8080,
+    //                                               [&](std::unique_ptr<EventHandler> h) {
+    //                                                   reactor.register_handler(std::move(h));
+    //                                               });
+
+    auto listener = std::make_unique<TCPListener>(
+        8080,
+        [&](ConnectionInfo connection) {
+            auto session = std::make_unique<Session>(std::move(connection));
+            reactor.register_handler(std::move(session));
+        }
+    );
 
 
     // auto listener = std::make_unique<TCPListener>(8080, reactor);
