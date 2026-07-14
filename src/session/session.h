@@ -1,6 +1,6 @@
 #pragma once
 
-#include "endpoint.h"
+#include "../peer/endpoint.h"
 #include "../handlers/event_handler.h"
 #include "../wire/msg.h"
 

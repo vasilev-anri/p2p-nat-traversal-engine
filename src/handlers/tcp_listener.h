@@ -10,7 +10,7 @@
 #include "../transport/connection_info.h"
 
 #include <iostream>
-#include "../peer/session.h"
+#include "../session/session.h"
 
 #include "../utils/socket_utils.h"
 
