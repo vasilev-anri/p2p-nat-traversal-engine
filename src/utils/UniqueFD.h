@@ -14,6 +14,7 @@ private:
 public:
     UniqueFD() = default;
     explicit UniqueFD(int fd) : fd_(fd) {}
+    explicit operator bool() const {return is_valid();}
     UniqueFD(const UniqueFD&) = delete;
     UniqueFD& operator=(const UniqueFD&) = delete;
     UniqueFD(UniqueFD&& other) noexcept : fd_(other.fd_) {other.fd_ = -1;}
@@ -35,6 +36,7 @@ public:
     }
     void reset(int new_fd = - 1) {
         if (fd_ != -1 && fd_ != new_fd) ::close(fd_);
+        fd_ = new_fd;
     }
 };
 
