@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string>
-#include <cstdint>
+#include <netinet/in.h>
+
 
 struct Endpoint {
     std::string address;
@@ -14,3 +15,6 @@ struct Endpoint {
         return !address.empty() && port != 0;
     }
 };
+
+
+Endpoint sockaddr_to_endpoint(const sockaddr_in& addr);

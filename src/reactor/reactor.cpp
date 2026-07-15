@@ -52,6 +52,17 @@ void Reactor::handle_events() {
         auto it = handlers.find(fd);
         if (it == handlers.end()) continue;
 
-        it->second->handle_event(events[i].events);
+        it->second->handle_event(translate(events[i].events));
     }
+}
+
+
+uint32_t Reactor::translate(uint32_t event) {
+    uint32_t result = 0;
+    if (event & EPOLLIN) result |= IOEvents::READABLE;
+    if (event & EPOLLOUT) result |= IOEvents::WRITABLE;
+    if (event & (EPOLLRDHUP | EPOLLHUP)) result |= IOEvents::CLOSED;
+    if (event & EPOLLERR) result |= IOEvents::ERROR;
+
+    return result;
 }

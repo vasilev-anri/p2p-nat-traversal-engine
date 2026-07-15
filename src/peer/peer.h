@@ -12,9 +12,10 @@
 
 #include "../wire/msg.h"
 
-#include "endpoint.h"
+#include "../net/endpoint.h"
 
-struct Session;
+#include "../session/session.h"
+
 
 enum class PeerState {
     UNKNOWN,

@@ -11,6 +11,8 @@
 #include "../handlers/event_handler.h"
 #include "../utils/socket_utils.h"
 
+#include "../utils/io_events.h"
+
 
 
 class Reactor {
@@ -21,6 +23,9 @@ public:
     void register_handler(std::unique_ptr<EventHandler> handler);
     void unregister_handler(int fd);
     void handle_events();
+
+private:
+    static uint32_t translate(uint32_t event);
 };
 
 #endif //P2P_NAT_REACTOR_H

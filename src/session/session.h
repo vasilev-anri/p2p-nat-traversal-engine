@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../peer/endpoint.h"
+#include "../net/endpoint.h"
 #include "../handlers/event_handler.h"
 #include "../wire/msg.h"
 
@@ -10,7 +10,8 @@
 #include "../transport/connection_info.h"
 #include "../wire/msg_parser.h"
 
-#include <sys/epoll.h>
+#include "../utils/socket_utils.h"
+#include "../utils/io_events.h"
 
 
 enum class SessionState {
@@ -66,6 +67,9 @@ public:
     [[nodiscard]] int fd() const noexcept;
 
 
+    void mark_established();
+
+
 private:
     // rector events
     void handle_read();
@@ -77,6 +81,7 @@ private:
     void emit_established();
     void emit_closed();
     void emit_error(const std::string& error);
+
 
 private:
 

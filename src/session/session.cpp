@@ -1,10 +1,6 @@
-//
-// Created by av on 7/13/26.
-//
-
 #include "session.h"
 
-#include "../utils/socket_utils.h"
+#include "../wire/msg_types.h"
 
 
 Session::Session(ConnectionInfo connection) : connection_(std::move(connection)) {
@@ -12,6 +8,50 @@ Session::Session(ConnectionInfo connection) : connection_(std::move(connection))
 }
 
 Session::~Session() = default;
+
+void Session::send(const Message& msg) {
+    auto header_bytes = MessageCodec::encode_header(msg.header);
+    ::send(get_fd(), header_bytes.data(), header_bytes.size(), 0);
+    if (!msg.payload.empty()) {
+        ::send(get_fd(), msg.payload.data(), msg.payload.size(), 0);
+    }
+}
+
+
+void Session::start_handshake() {
+    if (state_ != SessionState::CONNECTED) return;
+
+    Hello hello{};
+    hello.node_id = 0x1234567890ABCDEF;
+    hello.tcp_port = connection_.local_endpoint.port;
+    hello.udp_port = 0;
+
+    auto payload = MessageCodec::encode_hello(hello);
+
+    MessageHeader header{};
+    header.magic = MessageHeader::MAGIC;
+    header.version = 1;
+    header.type = static_cast<uint8_t>(MsgType::hello);
+    header.length = static_cast<uint32_t>(payload.size());
+    header.session_id = 0;
+    header.request_id = 0;
+
+    Message message;
+    message.header = header;
+    message.payload = payload;
+
+    send(message);
+    state_ = SessionState::HANDSHAKING;
+}
+
+
+void Session::mark_established() {
+    if (state_ == SessionState::HANDSHAKING || state_ == SessionState::CONNECTED) {
+        state_ = SessionState::ESTABLISHED;
+        emit_established();
+    }
+}
+
 
 const Endpoint& Session::local_endpoint() const noexcept {
     return connection_.local_endpoint;
@@ -75,26 +115,23 @@ void Session::close() {
     done();
 }
 
+
 void Session::handle_event(uint32_t events) {
-    if (events & EPOLLERR) {
+    if (events & IOEvents::ERROR) {
         handle_error();
         return;
     }
 
-    if (events & EPOLLHUP) {
-        done();
-        return;
-    }
-
-    if (events & EPOLLIN) {
+    if (events & IOEvents::READABLE) {
         handle_read();
     }
 
-    if (events & EPOLLRDHUP) {
+    if (events & IOEvents::CLOSED) {
         close();
+        return;
     }
 
-    if (events & EPOLLOUT) {
+    if (events & IOEvents::WRITABLE) {
         handle_write();
     }
 }

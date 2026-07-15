@@ -1,7 +1,7 @@
 #ifndef P2P_NAT_CONNECTION_INFO_H
 #define P2P_NAT_CONNECTION_INFO_H
 
-#include "../peer/endpoint.h"
+#include "../net/endpoint.h"
 #include "../utils/UniqueFD.h"
 
 struct ConnectionInfo {

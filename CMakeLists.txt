@@ -28,9 +28,12 @@ add_executable(p2p_nat src/app/main.cpp
         src/peer/peer.h
         src/peer/peers_manager.cpp
         src/peer/peers_manager.h
-        src/peer/endpoint.h
+        src/net/endpoint.h
         src/session/session.cpp
         src/session/session.h
         src/transport/connection_info.h
+        src/utils/io_events.h
+        src/transport/tcp_utils.h
+        src/net/endpoint.cpp
 
 )

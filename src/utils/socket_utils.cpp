@@ -1,7 +1,5 @@
 #include "socket_utils.h"
 
-#include <arpa/inet.h>
-
 
 int set_nonblocking(int fd) {
     int flags = fcntl(fd, F_GETFL, 0);
@@ -56,12 +54,6 @@ RecvStatus drain_udp_socket(int fd, std::vector<UDPPacket>& out) {
 }
 
 
-Endpoint sockaddr_to_endpoint(const sockaddr_in& addr) {
-    char buff[INET_ADDRSTRLEN]{};
 
-    inet_ntop(AF_INET, &addr.sin_addr, buff, sizeof(buff));
-
-    return {std::string(buff), ntohs(addr.sin_port)};
-}
 
 

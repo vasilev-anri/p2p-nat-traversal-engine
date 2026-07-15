@@ -47,9 +47,9 @@ void Peer::remove_session(Session* session) {
 
 void Peer::send(const Message& msg) {
     for (auto& session : active_sessions) {
-        // if (session && session->is_ready()) {
-        //     session->send(msg);
-        //     return;
-        // }
+        if (session && session->is_ready()) {
+            session->send(msg);
+            return;  // send to first ready session only
+        }
     }
 }
